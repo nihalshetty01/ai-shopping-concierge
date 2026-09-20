@@ -5,13 +5,13 @@ api/server.py
 FastAPI backend server for the AI Shopping Concierge.
 
 Exposes:
-  • GET  /health          - Health check + Redis connectivity status.
-  • GET  /products        - Full product catalog, optionally filtered by category.
-  • GET  /products/{id}   - Single product by ID.
-  • POST /chat            - Accepts user messages, manages stateful conversation
+  • GET  /api/health          - Health check + Redis connectivity status.
+  • GET  /api/products        - Full product catalog, optionally filtered by category.
+  • GET  /api/products/{id}   - Single product by ID.
+  • POST /api/chat            - Accepts user messages, manages stateful conversation
                             history sessions, and calls the agent Orchestrator.
 
-Rate-limiting order in POST /chat:
+Rate-limiting order in POST /api/chat:
   1. Load session state.
   2. Per-session cap check (SESSION_MAX_TURNS) — returns cap message immediately,
      never touches the daily counter.
@@ -361,7 +361,7 @@ class HealthResponse(BaseModel):
 
 
 
-@app.get("/health", response_model=HealthResponse, status_code=status.HTTP_200_OK)
+@app.get("/api/health", response_model=HealthResponse, status_code=status.HTTP_200_OK)
 def get_health() -> Dict[str, Any]:
     """Verify backend server connectivity and Redis reachability.
 
@@ -380,7 +380,7 @@ def get_health() -> Dict[str, Any]:
     return {"status": "ok", "redis_connected": redis_ok}
 
 
-@app.get("/products", response_model=List[Dict[str, Any]], status_code=status.HTTP_200_OK)
+@app.get("/api/products", response_model=List[Dict[str, Any]], status_code=status.HTTP_200_OK)
 def get_products(category: Optional[str] = None) -> List[Dict[str, Any]]:
     """Return all catalog products, optionally filtered by category query param."""
     catalog = load_catalog_json()
@@ -390,7 +390,7 @@ def get_products(category: Optional[str] = None) -> List[Dict[str, Any]]:
     return catalog
 
 
-@app.get("/products/{product_id}", response_model=Dict[str, Any], status_code=status.HTTP_200_OK)
+@app.get("/api/products/{product_id}", response_model=Dict[str, Any], status_code=status.HTTP_200_OK)
 def get_product_by_id(product_id: str) -> Dict[str, Any]:
     """Return a single product by its unique ID, or 404 if not found."""
     catalog = load_catalog_json()
@@ -405,7 +405,7 @@ def get_product_by_id(product_id: str) -> Dict[str, Any]:
 
 
 
-@app.post("/chat", response_model=ChatResponse, status_code=status.HTTP_200_OK)
+@app.post("/api/chat", response_model=ChatResponse, status_code=status.HTTP_200_OK)
 def post_chat(request: ChatRequest) -> Dict[str, Any]:
     """Process a user shopping request, maintaining state across session_id.
 

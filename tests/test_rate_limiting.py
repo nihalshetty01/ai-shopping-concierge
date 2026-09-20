@@ -115,7 +115,7 @@ class TestSessionCap:
         assert SESSION_MAX_TURNS == 6
 
 # ---- Integration: server endpoint response via TestClient ----
-# These use FastAPI's TestClient to exercise the full /chat handler logic
+# These use FastAPI's TestClient to exercise the full /api/chat handler logic
 # with mocked Upstash Redis and mocked Orchestrator.
 class TestChatEndpointRateLimiting:
     def _make_app(self, preloaded_redis=None):
@@ -143,7 +143,7 @@ class TestChatEndpointRateLimiting:
         srv._build_redis_client = lambda: mock_redis
         from fastapi.testclient import TestClient
         client = TestClient(srv.app, raise_server_exceptions=False)
-        resp = client.post('/chat', json={'session_id': 'test-daily', 'message': 'hi'})
+        resp = client.post('/api/chat', json={'session_id': 'test-daily', 'message': 'hi'})
         assert resp.status_code == 429
 
     def test_session_cap_returns_200_with_friendly_message(self):
@@ -155,7 +155,7 @@ class TestChatEndpointRateLimiting:
         import unittest.mock as mock
         with mock.patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'test-key'}):
             client = TestClient(srv.app, raise_server_exceptions=False)
-            resp = client.post('/chat', json={'session_id': 'sess_capped', 'message': 'one more'})
+            resp = client.post('/api/chat', json={'session_id': 'sess_capped', 'message': 'one more'})
         assert resp.status_code == 200
         data = resp.json()
         assert data['session_capped'] is True
@@ -179,7 +179,7 @@ class TestChatEndpointRateLimiting:
         from fastapi.testclient import TestClient
         with mock.patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'test-key'}):
             client = TestClient(srv.app, raise_server_exceptions=False)
-            resp = client.post('/chat', json={
+            resp = client.post('/api/chat', json={
                 'session_id': 'capped_daily_isolation',
                 'message': 'extra message',
             })
@@ -208,7 +208,7 @@ class TestChatEndpointRateLimiting:
         from fastapi.testclient import TestClient
         with mock.patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'test-key'}):
             client = TestClient(srv.app, raise_server_exceptions=False)
-            resp = client.post('/chat', json={'session_id': 'new-session', 'message': 'hi'})
+            resp = client.post('/api/chat', json={'session_id': 'new-session', 'message': 'hi'})
 
         # Must be rate-limited
         assert resp.status_code == 429
@@ -221,7 +221,7 @@ class TestChatEndpointRateLimiting:
         )
 
 
-# ---- /health endpoint tests ----
+# ---- /api/health endpoint tests ----
 class TestHealthEndpoint:
     def teardown_method(self, method):
         import api.server as srv
@@ -229,7 +229,7 @@ class TestHealthEndpoint:
             srv._build_redis_client = srv._build_redis_client_orig
 
     def test_health_redis_connected_false_when_no_credentials(self):
-        """/health must report redis_connected=false when env vars are absent."""
+        """/api/health must report redis_connected=false when env vars are absent."""
         import api.server as srv
         import unittest.mock as mock
         from fastapi.testclient import TestClient
@@ -239,14 +239,14 @@ class TestHealthEndpoint:
         srv._build_redis_client = lambda: None
 
         client = TestClient(srv.app, raise_server_exceptions=False)
-        resp = client.get('/health')
+        resp = client.get('/api/health')
         assert resp.status_code == 200
         data = resp.json()
         assert data['status'] == 'ok'
         assert data['redis_connected'] is False
 
     def test_health_redis_connected_true_when_client_responds(self):
-        """/health must report redis_connected=true when the client successfully pings Redis."""
+        """/api/health must report redis_connected=true when the client successfully pings Redis."""
         import api.server as srv
         import unittest.mock as mock
         from fastapi.testclient import TestClient
@@ -257,13 +257,13 @@ class TestHealthEndpoint:
         srv._build_redis_client = lambda: working_redis
 
         client = TestClient(srv.app, raise_server_exceptions=False)
-        resp = client.get('/health')
+        resp = client.get('/api/health')
         assert resp.status_code == 200
         data = resp.json()
         assert data['redis_connected'] is True
 
     def test_health_redis_connected_false_when_client_raises(self):
-        """/health must report redis_connected=false when the Redis call throws."""
+        """/api/health must report redis_connected=false when the Redis call throws."""
         import api.server as srv
         import unittest.mock as mock
         from fastapi.testclient import TestClient
@@ -275,7 +275,7 @@ class TestHealthEndpoint:
         srv._build_redis_client = lambda: _BrokenRedis()
 
         client = TestClient(srv.app, raise_server_exceptions=False)
-        resp = client.get('/health')
+        resp = client.get('/api/health')
         assert resp.status_code == 200
         data = resp.json()
         assert data['redis_connected'] is False
