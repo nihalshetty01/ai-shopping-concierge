@@ -1357,12 +1357,16 @@
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
                         session_id: sessionId,
                         feedback_type: 'product',
                         product_id: pid,
                         rating: rating,
-                        category: category || undefined,
-                        priority: priority || undefined
+                        category: category || '',
+                        priority: priority || '',
+                        turn_index: '',
+                        had_clarifying_question: '',
+                        num_products_shown: ''
                     })
                 });
             } catch (err) {
@@ -1470,9 +1474,13 @@
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
                         session_id: sessionId,
                         feedback_type: 'response',
+                        product_id: '',
                         rating: rating,
+                        category: '',
+                        priority: '',
                         turn_index: Number(turnIndex),
                         had_clarifying_question: Boolean(hadClarifyingQuestion),
                         num_products_shown: Number(numProductsShown)
