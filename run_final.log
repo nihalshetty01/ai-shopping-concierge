@@ -1,0 +1,42 @@
+
+######################################################################
+# TEST G01
+# Expected: Turn 1: ONE clarifying question on performance vs. battery. Turn 2: calls catalog_search(laptop, 60000, performance) and presents at most 3 options, each with a reason tied to renders/editing speed — not a spec dump
+######################################################################
+
+======================================================================
+USER: laptop for video editing, ₹60k budget
+======================================================================
+Traceback (most recent call last):
+  File "C:\Users\nihal\OneDrive\Documents\GitHub\AI Shopping concierge\agent\orchestrator.py", line 527, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\nihal\OneDrive\Documents\GitHub\AI Shopping concierge\agent\orchestrator.py", line 523, in main
+    run_test(test_id, messages, expected)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nihal\OneDrive\Documents\GitHub\AI Shopping concierge\agent\orchestrator.py", line 446, in run_test
+    reply = orch.chat(msg)
+  File "C:\Users\nihal\OneDrive\Documents\GitHub\AI Shopping concierge\agent\orchestrator.py", line 323, in chat
+    response = self.client.messages.create(
+        model=self.MODEL,
+    ...<3 lines>...
+        messages=self.messages,
+    )
+  File "C:\Users\nihal\AppData\Roaming\Python\Python314\site-packages\anthropic\_utils\_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "C:\Users\nihal\AppData\Roaming\Python\Python314\site-packages\anthropic\resources\messages\messages.py", line 968, in create
+    return self._post(
+           ~~~~~~~~~~^
+        "/v1/messages",
+        ^^^^^^^^^^^^^^^
+    ...<27 lines>...
+        stream_cls=Stream[RawMessageStreamEvent],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nihal\AppData\Roaming\Python\Python314\site-packages\anthropic\_base_client.py", line 1490, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nihal\AppData\Roaming\Python\Python314\site-packages\anthropic\_base_client.py", line 1174, in request
+    raise self._make_status_error_from_response(response) from None
+anthropic.BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CeWkjksuGqMLgvH5DQJYg'}

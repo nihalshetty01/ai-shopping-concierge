@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Concierge & Co. | Premium Electronics Shopping</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Inter & Manrope -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        luxury: {
+                            primary: '#1C1917',     // Premium dark stone
+                            secondary: '#44403C',   // Muted charcoal stone
+                            accent: '#A16207',      // Warm gold/amber
+                            bg: '#FAFAF9',          // Warm light gray
+                            card: '#FFFFFF',
+                            border: '#E5E7EB',
+                            highlight: '#F59E0B'    // Bright Gold for stars/badges
+                        }
+                    },
+                    boxShadow: {
+                        premium: '0 4px 20px -2px rgba(28, 25, 23, 0.08), 0 2px 8px -1px rgba(28, 25, 23, 0.04)',
+                        cardHover: '0 20px 25px -5px rgba(28, 25, 23, 0.1), 0 10px 10px -5px rgba(28, 25, 23, 0.04)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styling for Scrollbars and Grids -->
+    <style>
+        .grid-pattern {
+            background-image: radial-gradient(rgba(161, 98, 7, 0.15) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        /* Custom scrollbar for chat log */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: #F5F5F4;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #D6D3D1;
+            border-radius: 3px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb:hover {
+            background: #A8A29E;
+        }
+    </style>
+</head>
+<body class="bg-luxury-bg text-luxury-primary h-full flex flex-col font-sans antialiased">
+
+    <!-- ========================================== -->
+    <!-- 1. TOP NAVIGATION BAR                      -->
+    <!-- ========================================== -->
+    <header class="bg-luxury-primary text-white sticky top-0 z-40 shadow-md">
+        <!-- Main Nav Strip -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Left: Logo & Location -->
+            <div class="flex items-center gap-6">
+                <!-- Premium Original Wordmark -->
+                <a href="javascript:void(0)" onclick="navigateHome(); return false;" class="flex items-center gap-2 group">
+                    <div class="w-8 h-8 rounded bg-luxury-accent flex items-center justify-center font-heading text-lg font-extrabold text-white shadow-md">A</div>
+                    <span class="font-heading text-xl font-extrabold tracking-tight text-white">AURA<span class="text-luxury-accent">CONCIERGE</span></span>
+                </a>
+
+                <!-- E-commerce Deliver-to indicator -->
+                <div class="hidden md:flex items-center text-xs text-gray-300 hover:text-white cursor-pointer transition py-1 px-2 rounded hover:bg-stone-800">
+                    <svg class="w-4 h-4 mr-1.5 text-luxury-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-[10px] text-stone-400 leading-none">Deliver to</p>
+                        <p class="font-bold text-[11px] leading-tight mt-0.5">Mumbai 400001</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Interactive Search & CTA -->
+            <div class="flex-1 max-w-2xl flex items-center gap-2">
+                <!-- Search input container -->
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 text-stone-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="search-input" placeholder="Search laptops, smartphones, headphones..." 
+                        class="w-full bg-stone-800 text-sm text-white placeholder-stone-400 border border-stone-700 rounded-lg pl-9 pr-4 py-2 focus:outline-none focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent transition">
+                </div>
+                
+                <!-- Primary CTA - Shopping Buddy Trigger -->
+                <button id="buddy-trigger" class="flex items-center gap-1.5 bg-luxury-accent hover:bg-amber-800 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow transition duration-150 ease-in-out shrink-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-luxury-accent focus:ring-offset-luxury-primary">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Shopping Buddy</span>
+                </button>
+            </div>
+
+            <!-- Right: Account, Orders, Cart -->
+            <div class="flex items-center gap-4 text-xs text-gray-300">
+                <!-- Account Dropdown -->
+                <div class="hover:text-white cursor-pointer transition py-1 px-2 rounded hover:bg-stone-800 hidden sm:block">
+                    <p class="text-[10px] text-stone-400 leading-none">Hello, Sign in</p>
+                    <p class="font-bold text-[11px] leading-tight mt-0.5">Account & Lists</p>
+                </div>
+
+                <!-- Orders link -->
+                <div class="hover:text-white cursor-pointer transition py-1 px-2 rounded hover:bg-stone-800 hidden md:block font-bold">
+                    <p class="text-[10px] text-stone-400 leading-none">Returns</p>
+                    <p class="font-bold text-[11px] leading-tight mt-0.5">& Orders</p>
+                </div>
+
+                <!-- Shopping Cart Icon with Badge -->
+                <div class="relative flex items-center hover:text-white cursor-pointer transition p-2 rounded hover:bg-stone-800">
+                    <svg class="w-6 h-6 text-luxury-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[9px] font-bold leading-none text-white bg-red-600 rounded-full">3</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subheader bar -->
+        <nav class="bg-stone-800 border-t border-stone-700 py-1.5 text-xs text-stone-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto whitespace-nowrap">
+                <a href="#" class="hover:text-white transition font-bold text-luxury-accent">All Categories</a>
+                <a href="#" class="hover:text-white transition">Best Sellers</a>
+                <a href="#" class="hover:text-white transition">Laptops & PC</a>
+                <a href="#" class="hover:text-white transition">Smartphones</a>
+                <a href="#" class="hover:text-white transition">Audio Devices</a>
+                <a href="#" class="hover:text-white transition">Today's Deals</a>
+                <a href="#" class="hover:text-white transition">Customer Service</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN CONTAINER                         -->
+    <!-- ========================================== -->
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
+
+        <!-- ========================================== -->
+        <!-- 3. MAIN WORKSPACE / SELECTIONS             -->
+        <!-- ========================================== -->
+        
+        <!-- Dynamic Product Section (shown when recommendations exist) -->
+        <section id="results-section" class="hidden flex flex-col gap-6">
+            <div class="flex flex-wrap items-center justify-between border-b border-gray-200 pb-3 gap-3">
+                <div class="flex items-baseline gap-3">
+                    <h2 class="font-heading text-2xl font-extrabold text-stone-900 tracking-tight">🎯 Aura Picks: Best Matches</h2>
+                    <span id="results-count" class="text-sm text-stone-500 font-semibold">3 items found</span>
+                </div>
+                <!-- Quick Demo Mode Buttons in Results header -->
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Demo Examples:</span>
+                    <button onclick="runDemo(1)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 transition">🎧 Wired Audio</button>
+                    <button onclick="runDemo(2)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 transition">💻 Battery Laptop</button>
+                    <button onclick="runDemo(3)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 transition">❓ Clarifying Q</button>
+                </div>
+            </div>
+            
+            <!-- Products responsive grid (3-4 columns) -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Dynamically filled by JS -->
+            </div>
+        </section>
+
+        <!-- Product Detail Section (shown when ?product=<id> is active) -->
+        <section id="detail-section" class="hidden flex flex-col gap-6">
+            <!-- Detail view controls -->
+            <div class="flex items-center justify-between">
+                <button id="back-button" onclick="navigateHome()" class="inline-flex items-center gap-2 text-xs font-bold text-stone-700 hover:text-stone-950 bg-white border border-stone-200 hover:border-stone-300 px-4 py-2.5 rounded-lg shadow-sm hover:shadow transition group">
+                    <svg class="w-4 h-4 text-stone-500 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span>Back to catalog</span>
+                </button>
+            </div>
+            
+            <!-- Detail Content / Fallback injected dynamically -->
+            <div id="detail-card-container"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 4. HERO SECTION                            -->
+        <!-- ========================================== -->
+        <section id="hero-section" class="bg-gradient-to-r from-stone-900 via-stone-800 to-stone-950 rounded-2xl overflow-hidden relative shadow-premium flex flex-col lg:flex-row items-center justify-between p-8 lg:p-12 gap-8">
+            <div class="absolute inset-0 grid-pattern opacity-10 pointer-events-none"></div>
+            
+            <!-- Left Hero copy -->
+            <div class="relative z-10 max-w-xl text-center lg:text-left">
+                <div class="inline-flex items-center gap-1.5 bg-stone-800/80 border border-stone-700 text-luxury-accent font-semibold text-xs px-3 py-1 rounded-full mb-4">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>AI-Powered Personal Shopper</span>
+                </div>
+                <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                    Match your real needs,<br><span class="text-luxury-accent">not just generic specs.</span>
+                </h1>
+                <p class="mt-4 text-gray-300 text-sm sm:text-base leading-relaxed">
+                    Say goodbye to endless comparison tabs. Describe what you want in simple words. Our Shopping Buddy filters, scores, and verifies items directly from the catalog.
+                </p>
+                <div class="mt-6 flex flex-wrap justify-center lg:justify-start gap-4">
+                    <button onclick="toggleBuddy(true)" class="bg-luxury-accent hover:bg-amber-800 text-white font-bold text-sm px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition">
+                        Start Chatting Now
+                    </button>
+                    <a href="#" class="border border-stone-700 hover:bg-stone-800 text-white font-semibold text-sm px-6 py-3 rounded-lg transition">
+                        Learn How It Works
+                    </a>
+                </div>
+
+                <!-- Demo Mode: Pre-scripted Examples (Zero API cost) -->
+                <div class="mt-8 pt-6 border-t border-stone-800/80">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                            Demo Mode
+                        </span>
+                        <span class="text-xs text-stone-300 font-medium">Try an example without live API calls:</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5">
+                        <button onclick="runDemo(1)" class="text-xs font-semibold text-stone-200 hover:text-white bg-stone-800/90 hover:bg-stone-700 border border-stone-700 hover:border-luxury-accent/60 px-3.5 py-2 rounded-lg transition flex items-center gap-2 group shadow-sm">
+                            <span>🎧</span>
+                            <span>Wired headphones for home listening</span>
+                        </button>
+                        <button onclick="runDemo(2)" class="text-xs font-semibold text-stone-200 hover:text-white bg-stone-800/90 hover:bg-stone-700 border border-stone-700 hover:border-luxury-accent/60 px-3.5 py-2 rounded-lg transition flex items-center gap-2 group shadow-sm">
+                            <span>💻</span>
+                            <span>Battery-focused laptop</span>
+                        </button>
+                        <button onclick="runDemo(3)" class="text-xs font-semibold text-stone-200 hover:text-white bg-stone-800/90 hover:bg-stone-700 border border-stone-700 hover:border-luxury-accent/60 px-3.5 py-2 rounded-lg transition flex items-center gap-2 group shadow-sm">
+                            <span>❓</span>
+                            <span>Cheap headphones</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero graphic card/box -->
+            <div class="relative z-10 w-full max-w-sm bg-stone-900/60 border border-stone-800 rounded-xl p-6 shadow-2xl backdrop-blur-sm">
+                <div class="flex items-center justify-between border-b border-stone-800 pb-3 mb-4">
+                    <span class="font-heading text-xs font-bold uppercase tracking-wider text-luxury-accent">Interactive Concierge</span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                </div>
+                <!-- Mock chat dialogue snippet -->
+                <div class="space-y-3 text-xs leading-relaxed">
+                    <div class="bg-stone-800/60 text-stone-300 rounded-lg p-3 border border-stone-700">
+                        <strong>You:</strong> I need a laptop for video editing around &#8377;60k. What's the best option?
+                    </div>
+                    <div class="bg-luxury-accent/10 border border-luxury-accent/25 text-stone-200 rounded-lg p-3">
+                        <strong>Buddy:</strong> I've matched 5 options. Lenovo Ideapad leads with a high 4.0/5 performance rating within budget. Would battery life or rendering speed be your priority?
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 5. CATEGORY QUICK LINKS (BENTO BOX GRID)   -->
+        <!-- ========================================== -->
+        <section id="categories-section" class="flex flex-col gap-6">
+            <h2 class="font-heading text-xl font-extrabold text-stone-900 tracking-tight">Browse Popular Suggestions</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Category 1: Laptops -->
+                <div onclick="triggerQuickQuery('I need a laptop for heavy video editing, budget around 60k. Performance is my priority.')" 
+                    class="bg-white border border-luxury-border rounded-xl p-6 shadow-premium hover:shadow-cardHover hover:-translate-y-1 transition-all duration-200 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-stone-100 flex items-center justify-center text-luxury-accent mb-4 group-hover:bg-luxury-accent group-hover:text-white transition-colors duration-200">
+                            <!-- Laptop Icon -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="font-heading text-base font-bold text-stone-900">Laptops for Creators</h3>
+                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">High performance processors, fast SSD storage, and balanced graphic specs for video editing and renders.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-semibold text-luxury-accent group-hover:underline">
+                        <span>Chat about creators laptop</span>
+                        <svg class="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Category 2: Phones -->
+                <div onclick="triggerQuickQuery('Looking for a smartphone for my mom, simple and has good battery. Budget is around 25000.')" 
+                    class="bg-white border border-luxury-border rounded-xl p-6 shadow-premium hover:shadow-cardHover hover:-translate-y-1 transition-all duration-200 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-stone-100 flex items-center justify-center text-luxury-accent mb-4 group-hover:bg-luxury-accent group-hover:text-white transition-colors duration-200">
+                            <!-- Phone Icon -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="font-heading text-base font-bold text-stone-900">Smartphones</h3>
+                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">Top value options. Excellent battery, screen brightness, and clear interface designs for simple daily tasks.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-semibold text-luxury-accent group-hover:underline">
+                        <span>Chat about smartphone picks</span>
+                        <svg class="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Category 3: Headphones -->
+                <div onclick="triggerQuickQuery('Need wireless earbuds for the gym, no wires, budget under 5000, priority is battery life.')" 
+                    class="bg-white border border-luxury-border rounded-xl p-6 shadow-premium hover:shadow-cardHover hover:-translate-y-1 transition-all duration-200 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-stone-100 flex items-center justify-center text-luxury-accent mb-4 group-hover:bg-luxury-accent group-hover:text-white transition-colors duration-200">
+                            <!-- Headphone Icon -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <h3 class="font-heading text-base font-bold text-stone-900">Audio & Headsets</h3>
+                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">Wireless or wired, optimized for sound clarity, battery longevity, or lightweight gym workouts.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-semibold text-luxury-accent group-hover:underline">
+                        <span>Chat about gym audio picks</span>
+                        <svg class="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 6. FOOTER                                  -->
+    <!-- ========================================== -->
+    <footer class="bg-luxury-primary text-gray-400 text-xs py-10 mt-auto border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <!-- Col 1 -->
+            <div>
+                <span class="font-heading font-extrabold text-sm text-white tracking-tight mb-3 block">Aura Concierge</span>
+                <p class="text-stone-400 leading-relaxed text-xs">An independent demo AI recommender matching verified electronics products to your fuzzy needs.</p>
+            </div>
+            <!-- Col 2 -->
+            <div>
+                <span class="font-heading font-bold text-sm text-white mb-3 block">Shop Electronics</span>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Laptops</a></li>
+                    <li><a href="#" class="hover:text-white transition">Smartphones</a></li>
+                    <li><a href="#" class="hover:text-white transition">Audio & Sound</a></li>
+                </ul>
+            </div>
+            <!-- Col 3 -->
+            <div>
+                <span class="font-heading font-bold text-sm text-white mb-3 block">Connect with Us</span>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Customer Portal</a></li>
+                    <li><a href="#" class="hover:text-white transition">Support Forum</a></li>
+                    <li><a href="#" class="hover:text-white transition">Contact Help</a></li>
+                </ul>
+            </div>
+            <!-- Col 4 -->
+            <div>
+                <span class="font-heading font-bold text-sm text-white mb-3 block">Legals</span>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">Terms of Use</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-stone-800 text-center text-[11px] text-stone-500">
+            &copy; 2026 Aura Concierge & Co. All rights reserved. This is a prototype application.
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- 7. SLIDE-IN CHAT SIDEBAR (SHOPPING BUDDY)  -->
+    <!-- ========================================== -->
+    <!-- Backdrop Overlay -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-stone-900/60 z-40 hidden backdrop-blur-sm transition-opacity duration-300"></div>
+
+    <!-- Chat Panel -->
+    <aside id="chat-sidebar" class="fixed right-0 top-0 h-full w-full sm:w-[450px] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-white flex flex-col border-l border-luxury-border">
+        
+        <!-- Panel Header -->
+        <div class="bg-luxury-primary text-white p-4 flex items-center justify-between border-b border-stone-800 shrink-0">
+            <div class="flex items-center gap-2">
+                <!-- Gold robot/concierge avatar icon -->
+                <div class="w-8 h-8 rounded bg-luxury-accent flex items-center justify-center text-white font-bold text-sm">🤖</div>
+                <div>
+                    <h3 class="font-heading font-bold text-sm leading-none">Shopping Buddy</h3>
+                    <p class="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+                        <span>Concierge Online</span>
+                    </p>
+                </div>
+            </div>
+            <!-- Close icon button -->
+            <button onclick="toggleBuddy(false)" class="text-gray-400 hover:text-white text-xl p-1 font-bold focus:outline-none">&times;</button>
+        </div>
+
+        <!-- Demo Mode Notice Banner -->
+        <div id="demo-badge-bar" class="hidden bg-amber-500/10 border-b border-amber-500/25 px-4 py-2 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span class="text-[11px] font-bold text-amber-600 tracking-tight">DEMO — Example conversation, no live query sent</span>
+            </div>
+            <button onclick="clearDemoBadge()" class="text-amber-600 hover:text-amber-800 text-sm font-bold leading-none" title="Dismiss banner">&times;</button>
+        </div>
+
+        <!-- Chat History Area -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll bg-stone-50">
+            <!-- Dynamic Messages Loaded here -->
+            <div class="flex items-start gap-2.5">
+                <div class="w-6 h-6 rounded-full bg-luxury-accent flex items-center justify-center text-[11px] text-white shrink-0">🤖</div>
+                <div class="bg-white border border-luxury-border text-xs rounded-xl p-3 text-luxury-primary leading-relaxed shadow-sm max-w-[85%] border-l-4 border-l-luxury-accent">
+                    Hello! I am your <strong>Aura Concierge</strong>.
+                    <br><br>
+                    Tell me what you are looking for (e.g. <i>"laptop for college work, budget around 45k"</i>) and let's find the best match for you!
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Loading Indicator (hidden by default) -->
+        <div id="chat-loading" class="hidden px-4 py-2 bg-stone-50 flex items-center gap-2 shrink-0">
+            <div class="flex space-x-1">
+                <div class="w-2 h-2 bg-luxury-accent rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 bg-luxury-accent rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-2 h-2 bg-luxury-accent rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+            </div>
+            <span class="text-[10px] font-semibold text-stone-500">Concierge is searching options...</span>
+        </div>
+
+        <!-- Panel Input Form -->
+        <form id="chat-form" class="p-4 border-t border-luxury-border bg-white flex items-center gap-2 shrink-0">
+            <input type="text" id="chat-input" placeholder="Type a message..." 
+                class="flex-1 bg-stone-50 text-xs text-luxury-primary placeholder-stone-400 border border-luxury-border rounded-full px-4 py-3 focus:outline-none focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent focus:bg-white transition">
+            
+            <button type="submit" class="bg-luxury-primary hover:bg-stone-800 text-white rounded-full w-10 h-10 flex items-center justify-center shrink-0 shadow-md hover:shadow-lg transition focus:outline-none">
+                <!-- Send Icon -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </form>
+    </aside>
+
+    <!-- ========================================== -->
+    <!-- 8. FRONTEND LOGIC (Vanilla JS)             -->
+    <!-- ========================================== -->
+    <script>
+        // Generate a persistent Session ID for the turn
+        const sessionId = crypto.randomUUID();
+        const API_URL = '/api/chat';
+        const PRODUCTS_API_URL = '/api/products';
+        const FEEDBACK_ENDPOINT = "https://script.google.com/macros/s/AKfycbxmpwTRAcaxG384BZol72Yf9EBMGfe5LrKX_F52dS2i27BRRRUnF359xePmQmaDxRlohw/exec";
+
+        // Preloaded full catalog, session product cache, and session feedback votes
+        let fullCatalog = [];
+        let cachedProducts = [];
+        let sessionFeedback = {};
+
+        try {
+            const stored = sessionStorage.getItem('aura_cached_products');
+            if (stored) {
+                cachedProducts = JSON.parse(stored);
+            }
+        } catch (e) {
+            console.warn('Unable to access sessionStorage:', e);
+        }
+
+        try {
+            const storedVotes = sessionStorage.getItem('aura_feedback_votes');
+            if (storedVotes) {
+                sessionFeedback = JSON.parse(storedVotes);
+            }
+        } catch (e) {
+            console.warn('Unable to access feedback in sessionStorage:', e);
+        }
+
+        let sessionResponseFeedback = {};
+        try {
+            const storedRespVotes = sessionStorage.getItem('aura_response_feedback_votes');
+            if (storedRespVotes) {
+                sessionResponseFeedback = JSON.parse(storedRespVotes);
+            }
+        } catch (e) {
+            console.warn('Unable to access response feedback in sessionStorage:', e);
+        }
+        let responseTurnCounter = 0;
+
+        // Fetch full catalog from backend once on page load
+        async function fetchCatalog() {
+            try {
+                const res = await fetch(PRODUCTS_API_URL);
+                if (res.ok) {
+                    fullCatalog = await res.json();
+                    // If user is already on a product detail route, re-check routing with fullCatalog
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.get('product')) {
+                        handleRouting();
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not preload full catalog:', err);
+            }
+        }
+
+        // DOM elements
+        const buddyTrigger = document.getElementById('buddy-trigger');
+        const chatSidebar = document.getElementById('chat-sidebar');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatLoading = document.getElementById('chat-loading');
+        const searchInput = document.getElementById('search-input');
+        
+        const resultsSection = document.getElementById('results-section');
+        const resultsCount = document.getElementById('results-count');
+        const productGrid = document.getElementById('product-grid');
+        const heroSection = document.getElementById('hero-section');
+        const categoriesSection = document.getElementById('categories-section');
+        const detailSection = document.getElementById('detail-section');
+        const detailCardContainer = document.getElementById('detail-card-container');
+
+        // Toggle Sidebar visibility
+        function toggleBuddy(open) {
+            if (open) {
+                chatSidebar.classList.remove('translate-x-full');
+                sidebarBackdrop.classList.remove('hidden');
+            } else {
+                chatSidebar.classList.add('translate-x-full');
+                sidebarBackdrop.classList.add('hidden');
+            }
+        }
+
+        buddyTrigger.addEventListener('click', () => toggleBuddy(true));
+        sidebarBackdrop.addEventListener('click', () => toggleBuddy(false));
+
+        // Append message bubbles to the sidebar panel log
+        function appendMessage(role, text, products = [], options = {}) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-start gap-2.5';
+            
+            const isUser = role === 'user';
+            
+            if (isUser) {
+                wrapper.className += ' justify-end';
+                wrapper.innerHTML = `
+                    <div class="bg-stone-800 text-white text-xs rounded-xl p-3 leading-relaxed shadow-sm max-w-[85%] border-r-4 border-r-stone-600">
+                        ${escapeHTML(text)}
+                    </div>
+                    <div class="w-6 h-6 rounded-full bg-stone-700 flex items-center justify-center text-[10px] text-white shrink-0">👤</div>
+                `;
+            } else {
+                const turnIdx = (options && options.turnIndex !== undefined) ? options.turnIndex : responseTurnCounter++;
+                const hadCQ = (options && options.hadClarifyingQuestion !== undefined)
+                    ? Boolean(options.hadClarifyingQuestion)
+                    : (products.length === 0 && (text.includes('?') || text.toLowerCase().includes('before i')));
+                const numProd = (options && options.numProductsShown !== undefined)
+                    ? Number(options.numProductsShown)
+                    : (products ? products.length : 0);
+
+                const bubble = document.createElement('div');
+                bubble.className = 'bg-white border border-luxury-border text-xs rounded-xl p-3 text-luxury-primary leading-relaxed shadow-sm border-l-4 border-l-luxury-accent';
+                bubble.innerHTML = formatMarkdown(text);
+
+                // Make product names inside chat replies clickable
+                const availableProducts = (products && products.length > 0)
+                    ? products
+                    : (cachedProducts.length > 0 ? cachedProducts : fullCatalog);
+                if (availableProducts && availableProducts.length > 0) {
+                    linkifyProductsInElement(bubble, availableProducts);
+                }
+
+                const contentCol = document.createElement('div');
+                contentCol.className = 'flex flex-col gap-1.5 max-w-[85%]';
+                contentCol.appendChild(bubble);
+
+                // Response-level feedback row
+                const feedbackRow = document.createElement('div');
+                feedbackRow.className = 'flex items-center gap-1.5 pl-1 text-[11px] text-stone-400 select-none';
+                feedbackRow.innerHTML = renderResponseFeedbackButtons(turnIdx, hadCQ, numProd);
+                contentCol.appendChild(feedbackRow);
+
+                wrapper.innerHTML = `
+                    <div class="w-6 h-6 rounded-full bg-luxury-accent flex items-center justify-center text-[11px] text-white shrink-0 mt-0.5">🤖</div>
+                `;
+                wrapper.appendChild(contentCol);
+            }
+            
+            chatMessages.appendChild(wrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Trigger queries from Hero quick-link category cards
+        function triggerQuickQuery(query) {
+            toggleBuddy(true);
+            sendMessage(query);
+        }
+
+        // Handle global search input triggers
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+                const text = searchInput.value.trim();
+                searchInput.value = '';
+                toggleBuddy(true);
+                sendMessage(text);
+            }
+        });
+
+        // Submit chat query to FastAPI
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            chatInput.value = '';
+            sendMessage(text);
+        });
+
+        async function sendMessage(messageText) {
+            // Dismiss demo banner if a live message is typed and sent
+            clearDemoBadge();
+
+            // Append User text bubble
+            appendMessage('user', messageText);
+
+            // Show loading indicators
+            chatLoading.classList.remove('hidden');
+            const inputs = chatForm.querySelectorAll('input, button');
+            inputs.forEach(el => el.disabled = true);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: messageText,
+                        session_id: sessionId
+                    })
+                });
+
+                if (!response.ok) {
+                    // Try to surface the server's own error detail (FastAPI sends
+                    // {"detail": "…"} on 4xx/5xx) so the user sees a meaningful
+                    // message instead of a bare HTTP status code.
+                    let detail = `Server returned HTTP ${response.status}`;
+                    try {
+                        const errBody = await response.json();
+                        if (errBody && errBody.detail) detail = errBody.detail;
+                    } catch (_) { /* ignore JSON parse failures */ }
+                    throw new Error(detail);
+                }
+
+                const data = await response.json();
+                
+                // Append Assistant reply bubble, passing retrieved products for mention linkifying
+                appendMessage('assistant', data.reply, data.products || []);
+
+                // Update product grids if recommendations loaded
+                if (data.products && data.products.length > 0) {
+                    cachedProducts = data.products;
+                    try {
+                        sessionStorage.setItem('aura_cached_products', JSON.stringify(cachedProducts));
+                    } catch (e) {
+                        console.warn('Could not cache to sessionStorage', e);
+                    }
+                    // Only switch view if not actively viewing a detail page
+                    const currentProductParam = new URLSearchParams(window.location.search).get('product');
+                    if (!currentProductParam) {
+                        renderProductGrid(cachedProducts);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                // err.message is either the server's own detail string (extracted above
+                // from the 4xx/5xx response body) or a bare fetch/network failure message.
+                // Prefer the server's message; fall back to the generic connection hint.
+                const serverDetail = err && err.message && !err.message.startsWith('Failed to fetch')
+                    ? err.message
+                    : null;
+                const displayMsg = serverDetail
+                    ? `⚠️ ${serverDetail}`
+                    : `⚠️ **Network Error:** Could not connect to the API server. Please verify the API server is reachable.`;
+                appendMessage('assistant', displayMsg);
+            } finally {
+                chatLoading.classList.add('hidden');
+                inputs.forEach(el => el.disabled = false);
+                chatInput.focus();
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 1. CATEGORY ICON PLACEHOLDERS (Inline SVGs in slate + amber)
+        // -------------------------------------------------------------
+        function getCategorySvg(category, size = 'sm') {
+            const cat = (category || '').toLowerCase().trim();
+            const isLarge = size === 'lg';
+            const iconSize = isLarge ? 'w-32 h-32 md:w-40 md:h-40' : 'w-16 h-16';
+
+            if (cat === 'laptop') {
+                return `
+                    <svg viewBox="0 0 80 80" class="${iconSize} transition-transform duration-300 group-hover:scale-105" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Laptop Icon">
+                        <!-- Screen Bezel -->
+                        <rect x="14" y="15" width="52" height="35" rx="3" fill="#1C1917" stroke="#44403C" stroke-width="2"/>
+                        <!-- Inner Display -->
+                        <rect x="18" y="19" width="44" height="27" rx="1.5" fill="#292524"/>
+                        <!-- Ambient Amber Screen Accents -->
+                        <line x1="24" y1="26" x2="38" y2="26" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="24" y1="32" x2="52" y2="32" stroke="#A16207" stroke-width="1.8" stroke-linecap="round"/>
+                        <line x1="24" y1="37" x2="44" y2="37" stroke="#78716C" stroke-width="1.8" stroke-linecap="round"/>
+                        <circle cx="53" cy="26" r="2" fill="#F59E0B" fill-opacity="0.9"/>
+                        <!-- Webcam dot -->
+                        <circle cx="40" cy="17" r="0.9" fill="#78716C"/>
+                        <!-- Laptop Base -->
+                        <path d="M8 53h64l-4 8H12l-4-8z" fill="#292524" stroke="#44403C" stroke-width="2"/>
+                        <!-- Trackpad notch -->
+                        <rect x="34" y="55" width="12" height="3" rx="1" fill="#A16207"/>
+                    </svg>
+                `;
+            } else if (cat === 'phone') {
+                return `
+                    <svg viewBox="0 0 80 80" class="${iconSize} transition-transform duration-300 group-hover:scale-105" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Phone Icon">
+                        <!-- Phone Outer Shell -->
+                        <rect x="25" y="9" width="30" height="62" rx="6" fill="#1C1917" stroke="#44403C" stroke-width="2"/>
+                        <!-- Screen Glass -->
+                        <rect x="28" y="15" width="24" height="50" rx="3" fill="#292524"/>
+                        <!-- Speaker Grill Notch -->
+                        <rect x="36" y="12" width="8" height="1.5" rx="0.75" fill="#78716C"/>
+                        <!-- Screen Amber Visual Accents -->
+                        <circle cx="40" cy="29" r="6" fill="#A16207" fill-opacity="0.35" stroke="#F59E0B" stroke-width="1.2"/>
+                        <line x1="33" y1="42" x2="47" y2="42" stroke="#A16207" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="33" y1="47" x2="43" y2="47" stroke="#78716C" stroke-width="1.5" stroke-linecap="round"/>
+                        <!-- Home Indicator Pill -->
+                        <rect x="35" y="61" width="10" height="1.5" rx="0.75" fill="#A8A29E"/>
+                    </svg>
+                `;
+            } else if (cat === 'headphones') {
+                return `
+                    <svg viewBox="0 0 80 80" class="${iconSize} transition-transform duration-300 group-hover:scale-105" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Headphones Icon">
+                        <!-- Headband Arch -->
+                        <path d="M21 42c0-11.598 8.954-21 20-21s20 9.402 20 21" stroke="#44403C" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Amber Accent Headband Trim -->
+                        <path d="M26 35c3.5-5.5 8.5-8 14-8s10.5 2.5 14 8" stroke="#A16207" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Left Earcup Body -->
+                        <rect x="15" y="38" width="11" height="22" rx="5.5" fill="#1C1917" stroke="#44403C" stroke-width="2"/>
+                        <!-- Left Cushion Amber Accent -->
+                        <rect x="18" y="42" width="5" height="14" rx="2.5" fill="#A16207"/>
+                        <!-- Right Earcup Body -->
+                        <rect x="54" y="38" width="11" height="22" rx="5.5" fill="#1C1917" stroke="#44403C" stroke-width="2"/>
+                        <!-- Right Cushion Amber Accent -->
+                        <rect x="57" y="42" width="5" height="14" rx="2.5" fill="#A16207"/>
+                        <!-- Gold Pivot Screws -->
+                        <circle cx="20.5" cy="38" r="2.2" fill="#F59E0B"/>
+                        <circle cx="59.5" cy="38" r="2.2" fill="#F59E0B"/>
+                    </svg>
+                `;
+            } else {
+                return `
+                    <svg viewBox="0 0 80 80" class="${iconSize} transition-transform duration-300 group-hover:scale-105" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Electronics Icon">
+                        <rect x="18" y="18" width="44" height="44" rx="8" fill="#1C1917" stroke="#44403C" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="10" stroke="#F59E0B" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="4" fill="#A16207"/>
+                        <line x1="28" y1="28" x2="38" y2="28" stroke="#78716C" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                `;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 2. PRODUCT DETAIL VIEW & ROUTING
+        // -------------------------------------------------------------
+        function navigateToProduct(productId) {
+            if (!productId) return;
+            const url = new URL(window.location);
+            url.searchParams.set('product', productId);
+            window.history.pushState({ productId }, '', url);
+            handleRouting();
+        }
+
+        function navigateHome() {
+            const url = new URL(window.location);
+            url.searchParams.delete('product');
+            window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
+            handleRouting();
+        }
+
+        // Router handler: determines view based on ?product=<id> query parameter
+        async function handleRouting() {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('product');
+
+            if (productId) {
+                // Hide main grids & hero; display detail section
+                heroSection.classList.add('hidden');
+                resultsSection.classList.add('hidden');
+                categoriesSection.classList.add('hidden');
+                detailSection.classList.remove('hidden');
+
+                const pid = String(productId).toLowerCase().trim();
+
+                // 1. Look up in recent chat cache (in-memory or sessionStorage)
+                let found = cachedProducts.find(p => String(p.id).toLowerCase() === pid);
+
+                // 2. Look up in fullCatalog
+                if (!found && fullCatalog && fullCatalog.length > 0) {
+                    found = fullCatalog.find(p => String(p.id).toLowerCase() === pid);
+                }
+
+                if (found) {
+                    renderProductDetail(found);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+
+                // 3. Fallback: fetch directly from GET /products/{product_id}
+                try {
+                    const res = await fetch(`/api/products/${encodeURIComponent(productId)}`);
+                    if (res.ok) {
+                        const singleProduct = await res.json();
+                        if (!fullCatalog.some(p => String(p.id).toLowerCase() === pid)) {
+                            fullCatalog.push(singleProduct);
+                        }
+                        renderProductDetail(singleProduct);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        return;
+                    }
+                } catch (e) {
+                    // Backend unavailable or offline
+                }
+
+                // 4. Truly not found anywhere in catalog
+                renderProductNotFound(productId);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Home/Grid View
+                detailSection.classList.add('hidden');
+                categoriesSection.classList.remove('hidden');
+
+                if (cachedProducts && cachedProducts.length > 0) {
+                    heroSection.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+                    renderProductGrid(cachedProducts);
+                } else {
+                    heroSection.classList.remove('hidden');
+                    resultsSection.classList.add('hidden');
+                }
+            }
+        }
+
+        window.addEventListener('popstate', handleRouting);
+
+        // Render detailed product view
+        function renderProductDetail(product) {
+            const starsText = formatRatingString(product.avg_rating || 0.0, product.review_count || 0);
+            const specs = getProductSpecs(product);
+            const categorySvg = getCategorySvg(product.category, 'lg');
+            const categoryName = capitalize(product.category || 'Product');
+
+            detailCardContainer.innerHTML = `
+                <div class="bg-white border border-luxury-border rounded-2xl p-6 sm:p-8 lg:p-10 shadow-premium">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                        
+                        <!-- Left Column: Large Category Icon Placeholder -->
+                        <div class="lg:col-span-5 flex flex-col items-center">
+                            <div class="w-full aspect-square bg-gradient-to-b from-stone-50 to-stone-100/90 rounded-2xl border border-stone-200 flex items-center justify-center p-8 relative shadow-inner">
+                                <span class="absolute top-4 left-4 bg-stone-900 text-luxury-accent text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full border border-stone-700">
+                                    ${escapeHTML(categoryName)}
+                                </span>
+                                ${categorySvg}
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Details, Ratings, Pricing, Specs, CTA -->
+                        <div class="lg:col-span-7 flex flex-col">
+                            
+                            <!-- Category Badge -->
+                            <div class="mb-2">
+                                <span class="text-stone-400 font-heading text-xs font-extrabold uppercase tracking-widest">${escapeHTML(categoryName)}</span>
+                            </div>
+
+                            <!-- Product Name -->
+                            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight leading-tight mb-3">
+                                ${escapeHTML(product.name)}
+                            </h1>
+
+                            <!-- Rating & Reviews + Feedback Button -->
+                            <div class="flex flex-wrap items-center justify-between gap-3 text-sm mb-5 pb-4 border-b border-stone-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-luxury-highlight font-bold tracking-tight">${starsText.stars}</span>
+                                    <span class="font-bold text-stone-900">${starsText.ratingNum}</span>
+                                    <span class="text-stone-500 font-medium">(${starsText.reviewsFormatted} reviews)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[11px] text-stone-400 font-semibold tracking-wide uppercase">Helpful Pick?</span>
+                                    ${renderFeedbackButtons(product.id, product.category, product.priority || '')}
+                                </div>
+                            </div>
+
+                            <!-- Prominently Displayed Price -->
+                            <div class="mb-6">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-stone-400 block mb-1">Catalog Price</span>
+                                <div class="text-3xl sm:text-4xl font-extrabold text-luxury-accent font-heading">
+                                    &#8377;${product.price ? product.price.toLocaleString() : 0}
+                                </div>
+                            </div>
+
+                            <!-- 3. "PROCEED TO BUY" CTA BUTTON (Visually Disabled Demo State) -->
+                            <div class="flex flex-col items-start gap-1.5 pb-6 border-b border-stone-100">
+                                <button disabled aria-disabled="true" 
+                                    class="w-full sm:w-auto opacity-60 cursor-not-allowed bg-stone-200 text-stone-500 font-bold text-sm px-8 py-3.5 rounded-xl border border-stone-300 select-none inline-flex items-center justify-center gap-2 transition shadow-none">
+                                    <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                    </svg>
+                                    <span>Proceed to Buy</span>
+                                </button>
+                                <p class="text-xs text-stone-500 font-medium pl-1">Demo prototype — checkout not implemented.</p>
+                            </div>
+
+                            <!-- Full Specification List (Real grounded fields only) -->
+                            <div class="mt-6">
+                                <h2 class="font-heading text-sm font-bold uppercase tracking-wider text-stone-800 mb-3 flex items-center gap-2">
+                                    <span>Full Specifications</span>
+                                    <span class="text-[10px] font-semibold text-stone-400 bg-stone-100 px-2 py-0.5 rounded">Catalog Grounded</span>
+                                </h2>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    ${specs.map(spec => `
+                                        <div class="bg-stone-50 border border-stone-200/70 rounded-lg p-3 flex flex-col justify-center">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 leading-none">${escapeHTML(spec.label)}</span>
+                                            <span class="text-xs font-bold text-stone-800 mt-1">${escapeHTML(String(spec.value))}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render fallback message when landing on a product URL with no cached data
+        function renderProductNotFound(productId) {
+            detailCardContainer.innerHTML = `
+                <div class="bg-white border border-luxury-border rounded-2xl p-8 sm:p-12 text-center max-w-xl mx-auto shadow-premium flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full bg-amber-50 text-luxury-accent border border-amber-200 flex items-center justify-center mb-4 shadow-sm">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h2 class="font-heading text-xl font-bold text-stone-900 mb-2">Product Not In Session</h2>
+                    <p class="text-sm text-stone-600 mb-6 max-w-md leading-relaxed font-medium">
+                        This item isn't loaded — search again via Shopping Buddy to view it
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-3">
+                        <button onclick="navigateHome()" class="inline-flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            <span>Back to Homepage</span>
+                        </button>
+                        <button onclick="toggleBuddy(true)" class="inline-flex items-center gap-1.5 bg-luxury-accent hover:bg-amber-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Open Shopping Buddy</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render responsive product pick grids
+        function renderProductGrid(products) {
+            heroSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            detailSection.classList.add('hidden');
+            
+            resultsCount.textContent = `${products.length} concierge picks match`;
+            productGrid.innerHTML = '';
+
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-luxury-border rounded-xl p-5 shadow-premium hover:shadow-cardHover hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between h-full cursor-pointer group';
+                
+                const starsText = formatRatingString(product.avg_rating || 0.0, product.review_count || 0);
+                const specTags = makeSpecTags(product);
+                const categorySvg = getCategorySvg(product.category, 'sm');
+                const categoryName = capitalize(product.category || 'Product');
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Category Indicator & Tasteful Inline SVG Icon Placeholder -->
+                        <div class="relative w-full aspect-video bg-stone-100 rounded-lg flex items-center justify-center mb-4 border border-stone-200 overflow-hidden group-hover:border-luxury-accent/50 transition-colors">
+                            <span class="absolute top-2 left-2 bg-stone-900 text-[9px] font-bold text-luxury-accent uppercase tracking-wider px-2 py-0.5 rounded-full border border-stone-700 z-10">
+                                ${escapeHTML(categoryName)}
+                            </span>
+                            <div class="absolute top-2 right-2 z-20" onclick="event.stopPropagation()">
+                                ${renderFeedbackButtons(product.id, product.category, product.priority || '')}
+                            </div>
+                            ${categorySvg}
+                        </div>
+                        
+                        <!-- Product Title -->
+                        <h4 class="font-heading text-sm font-bold text-stone-900 line-clamp-2 leading-snug mb-2 group-hover:text-luxury-accent transition-colors" title="${escapeHTML(product.name)}">
+                            ${escapeHTML(product.name)}
+                        </h4>
+                        
+                        <!-- Rating: Real Grounded Rating Figure -->
+                        <div class="flex items-center gap-1.5 text-xs mb-3">
+                            <span class="text-luxury-highlight font-bold tracking-tight">${starsText.stars}</span>
+                            <span class="font-bold text-stone-900">${starsText.ratingNum}</span>
+                            <span class="text-stone-500 font-semibold">(${starsText.reviewsFormatted})</span>
+                        </div>
+                        
+                        <!-- Specs pill chips (grounded hardware features) -->
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            ${specTags}
+                        </div>
+                    </div>
+
+                    <!-- Price Footer & View Detail Action -->
+                    <div class="flex justify-between items-baseline pt-4 border-t border-stone-100 mt-auto">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider block leading-none">Pricing</span>
+                            <span class="font-heading text-lg font-extrabold text-luxury-accent">&#8377;${product.price ? product.price.toLocaleString() : 0}</span>
+                        </div>
+                        <span class="text-xs font-semibold text-luxury-accent group-hover:underline flex items-center gap-1">
+                            <span>Details</span>
+                            <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </span>
+                    </div>
+                `;
+                
+                // Click card or name opens the detail view
+                card.addEventListener('click', () => {
+                    navigateToProduct(product.id);
+                });
+
+                productGrid.appendChild(card);
+            });
+        }
+
+        // HTML escaping helper
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        function capitalize(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Authentic rating formatter: generates star icons (★ / ☆) matching "★★★★☆ 4.3 (5,400 reviews)"
+        function formatRatingString(rating, reviewCount) {
+            const num = Number(rating) || 0;
+            const reviews = Number(reviewCount) || 0;
+            
+            const fullStars = Math.floor(num);
+            const dec = num - fullStars;
+            let stars = '★'.repeat(Math.min(5, fullStars));
+            if (stars.length < 5 && dec >= 0.3) {
+                stars += '★';
+            }
+            while (stars.length < 5) {
+                stars += '☆';
+            }
+            stars = stars.slice(0, 5);
+
+            return {
+                stars,
+                ratingNum: num.toFixed(1),
+                reviewsFormatted: reviews.toLocaleString()
+            };
+        }
+
+        // Extract real catalog specifications (never invent fields)
+        function getProductSpecs(product) {
+            const specs = [];
+            if (product.category) specs.push({ label: 'Category', value: capitalize(product.category) });
+            if (product.processor) specs.push({ label: 'Processor', value: product.processor });
+            if (product.ram_gb) specs.push({ label: 'System RAM', value: `${product.ram_gb} GB` });
+            if (product.storage_gb) {
+                const sType = product.storage_type ? ` ${product.storage_type}` : '';
+                specs.push({ label: 'Storage', value: `${product.storage_gb} GB${sType}` });
+            } else if (product.storage_type) {
+                specs.push({ label: 'Storage Type', value: product.storage_type });
+            }
+            if (product.battery_hours) specs.push({ label: 'Battery Life', value: `${product.battery_hours} Hours` });
+            if (product.graphics_type) specs.push({ label: 'Graphics', value: capitalize(product.graphics_type) });
+            if (product.gpu_model) specs.push({ label: 'Dedicated GPU', value: product.gpu_model });
+            if (product.connectivity_type) specs.push({ label: 'Connectivity', value: capitalize(product.connectivity_type) });
+            if (product.noise_cancellation) specs.push({ label: 'Noise Cancellation', value: capitalize(product.noise_cancellation) });
+            if (product.driver_size_mm) specs.push({ label: 'Driver Size', value: `${product.driver_size_mm} mm` });
+            if (product.codec_support && product.codec_support !== 'N/A') specs.push({ label: 'Codec Support', value: product.codec_support });
+            if (product.warranty_months) specs.push({ label: 'Warranty', value: `${product.warranty_months} Months` });
+            return specs;
+        }
+
+        // Build spec badges based on item categories (grounded specs only)
+        function makeSpecTags(product) {
+            const category = (product.category || '').toLowerCase();
+            let tags = [];
+
+            if (category === 'laptop') {
+                if (product.processor) tags.push(product.processor);
+                if (product.ram_gb) tags.push(`${product.ram_gb}GB RAM`);
+                if (product.storage_gb) tags.push(`${product.storage_gb}GB ${product.storage_type || 'SSD'}`);
+                if (product.battery_hours) tags.push(`${product.battery_hours}h Battery`);
+            } else if (category === 'phone') {
+                if (product.processor) tags.push(product.processor);
+                if (product.ram_gb) tags.push(`${product.ram_gb}GB RAM`);
+                if (product.storage_gb) tags.push(`${product.storage_gb}GB`);
+                if (product.battery_hours) tags.push(`${product.battery_hours}h Battery`);
+            } else if (category === 'headphones') {
+                if (product.connectivity_type) tags.push(product.connectivity_type.replace('_', ' ').toUpperCase());
+                if (product.battery_hours) tags.push(`${product.battery_hours}h Battery`);
+                if (product.driver_size_mm) tags.push(`${product.driver_size_mm}mm Drivers`);
+            }
+
+            return tags.map(t => `<span class="inline-block bg-stone-100 text-stone-700 text-[10px] font-semibold px-2 py-0.5 rounded">${escapeHTML(t)}</span>`).join('');
+        }
+
+        // Light markdown formatter (interprets bold tags for styling replies)
+        function formatMarkdown(text) {
+            return escapeHTML(text)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // -------------------------------------------------------------
+        // 3. PRODUCT NAME MENTIONS IN CHAT REPLIES
+        // -------------------------------------------------------------
+        function escapeRegex(str) {
+            return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Derive candidate matching phrases (full name, base name, brand + model code)
+        function getProductMatchPhrases(product) {
+            const phrases = [];
+            const rawName = (product.name || '').trim();
+            if (!rawName) return phrases;
+
+            // 1. Full catalog name
+            phrases.push(rawName);
+
+            // 2. Base name before parenthesis (e.g. "Lenovo IdeaPad Slim 3", "HP 15s-eq2144AU")
+            const baseName = rawName.split('(')[0].trim();
+            if (baseName && baseName !== rawName) {
+                phrases.push(baseName);
+            }
+
+            // 3. Shortened model prefix before hyphen (e.g. "HP 15s" from "HP 15s-eq2144AU")
+            const dashMatch = baseName.match(/^(.*?\b[A-Za-z0-9]+)-[A-Za-z0-9]+/);
+            if (dashMatch && dashMatch[1]) {
+                const shortened = dashMatch[1].trim();
+                if (shortened.length >= 4) {
+                    phrases.push(shortened);
+                }
+            }
+
+            // 4. Distinctive 2-3 word leading runs (e.g. "Lenovo IdeaPad", "OnePlus Nord")
+            const tokens = baseName.split(/\s+/).filter(Boolean);
+            if (tokens.length >= 3) {
+                phrases.push(tokens.slice(0, 3).join(' '));
+                phrases.push(tokens.slice(0, 2).join(' '));
+            } else if (tokens.length === 2) {
+                phrases.push(tokens.join(' '));
+            }
+
+            // Return unique candidate phrases sorted longest first
+            return Array.from(new Set(phrases))
+                .filter(p => p.length >= 4)
+                .sort((a, b) => b.length - a.length);
+        }
+
+        // Search text nodes inside chat bubble element and wrap product matches with navigation links
+        function linkifyProductsInElement(containerEl, products) {
+            if (!containerEl || !products || products.length === 0) return;
+
+            const targets = [];
+            products.forEach(prod => {
+                const phrases = getProductMatchPhrases(prod);
+                phrases.forEach(phrase => {
+                    targets.push({
+                        phrase,
+                        productId: prod.id,
+                        prodName: prod.name
+                    });
+                });
+            });
+
+            // Longest phrase across all products wins first
+            targets.sort((a, b) => b.phrase.length - a.phrase.length);
+
+            const walker = document.createTreeWalker(
+                containerEl,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: (node) => {
+                        if (node.parentElement && node.parentElement.closest('a')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }
+            );
+
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+
+            textNodes.forEach(node => linkifyTextNode(node, targets));
+        }
+
+        function linkifyTextNode(textNode, targets) {
+            const text = textNode.nodeValue;
+            if (!text || !text.trim()) return;
+
+            let bestMatch = null;
+            let bestTarget = null;
+
+            for (const target of targets) {
+                // Word boundary check
+                const pattern = new RegExp(`(^|[^A-Za-z0-9])(${escapeRegex(target.phrase)})([^A-Za-z0-9]|$)`, 'i');
+                const m = pattern.exec(text);
+                if (m) {
+                    const startIndex = m.index + m[1].length;
+                    const matchedStr = m[2];
+                    if (!bestMatch || startIndex < bestMatch.index || (startIndex === bestMatch.index && matchedStr.length > bestMatch.matchedStr.length)) {
+                        bestMatch = { index: startIndex, length: matchedStr.length, matchedStr };
+                        bestTarget = target;
+                    }
+                }
+            }
+
+            if (bestMatch && bestTarget) {
+                const before = text.slice(0, bestMatch.index);
+                const after = text.slice(bestMatch.index + bestMatch.length);
+
+                const link = document.createElement('a');
+                link.href = 'javascript:void(0)';
+                link.className = 'text-luxury-accent font-semibold underline decoration-luxury-accent hover:text-amber-800 hover:decoration-amber-800 transition cursor-pointer';
+                link.title = `View details for ${bestTarget.prodName}`;
+                link.textContent = bestMatch.matchedStr;
+                const pid = bestTarget.productId;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigateToProduct(pid);
+                };
+
+                const frag = document.createDocumentFragment();
+                if (before) frag.appendChild(document.createTextNode(before));
+                frag.appendChild(link);
+
+                if (after) {
+                    const afterNode = document.createTextNode(after);
+                    frag.appendChild(afterNode);
+                    textNode.parentNode.replaceChild(frag, textNode);
+                    linkifyTextNode(afterNode, targets);
+                } else {
+                    textNode.parentNode.replaceChild(frag, textNode);
+                }
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 4. LIGHTWEIGHT PRODUCT FEEDBACK CAPTURE (Google Sheets)
+        // -------------------------------------------------------------
+        function renderFeedbackButtons(productId, category = '', priority = '') {
+            const pid = String(productId);
+            const currentVote = sessionFeedback[pid];
+            const isUp = currentVote === 'up';
+            const isDown = currentVote === 'down';
+
+            const upClasses = isUp 
+                ? 'text-emerald-700 bg-emerald-100 ring-1 ring-emerald-400' 
+                : 'text-stone-400 hover:text-emerald-600 hover:bg-emerald-50';
+            const downClasses = isDown 
+                ? 'text-rose-700 bg-rose-100 ring-1 ring-rose-400' 
+                : 'text-stone-400 hover:text-rose-600 hover:bg-rose-50';
+            const upFill = isUp ? 'currentColor' : 'none';
+            const downFill = isDown ? 'currentColor' : 'none';
+
+            return `
+                <div class="feedback-widget inline-flex items-center gap-1 bg-white/95 backdrop-blur-xs border border-stone-200/90 rounded-full px-1.5 py-0.5 shadow-sm" onclick="event.stopPropagation()">
+                    <button type="button" 
+                        class="feedback-btn feedback-up ${upClasses} transition-all p-1 rounded-full focus:outline-none" 
+                        title="${isUp ? 'Helpful pick (recorded)' : 'Mark as helpful recommendation'}"
+                        onclick="submitProductFeedback(event, '${escapeHTML(pid)}', 'up', '${escapeHTML(category)}', '${escapeHTML(priority)}')"
+                        data-pid="${escapeHTML(pid)}" data-rating="up" aria-label="Thumbs up">
+                        <svg class="w-3.5 h-3.5 pointer-events-none" fill="${upFill}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+                        </svg>
+                    </button>
+                    <button type="button" 
+                        class="feedback-btn feedback-down ${downClasses} transition-all p-1 rounded-full focus:outline-none" 
+                        title="${isDown ? 'Unhelpful pick (recorded)' : 'Mark as not helpful'}"
+                        onclick="submitProductFeedback(event, '${escapeHTML(pid)}', 'down', '${escapeHTML(category)}', '${escapeHTML(priority)}')"
+                        data-pid="${escapeHTML(pid)}" data-rating="down" aria-label="Thumbs down">
+                        <svg class="w-3.5 h-3.5 pointer-events-none" fill="${downFill}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3zm7-13h3a2 2 0 012 2v7a2 2 0 01-2 2h-3"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }
+
+        async function submitProductFeedback(event, productId, rating, category = '', priority = '') {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            if (!productId) return;
+
+            const pid = String(productId);
+            const prevVote = sessionFeedback[pid];
+            if (prevVote === rating) {
+                return; // Clicking same button is a no-op
+            }
+
+            // Update session feedback store
+            sessionFeedback[pid] = rating;
+            try {
+                sessionStorage.setItem('aura_feedback_votes', JSON.stringify(sessionFeedback));
+            } catch (e) {
+                console.warn('Could not save feedback vote to sessionStorage:', e);
+            }
+
+            // Immediately update visual button styles across DOM
+            updateFeedbackUI(pid, rating);
+
+            // Transmit to Google Apps Script Web App
+            try {
+                await fetch(FEEDBACK_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        feedback_type: 'product',
+                        product_id: pid,
+                        rating: rating,
+                        category: category || undefined,
+                        priority: priority || undefined
+                    })
+                });
+            } catch (err) {
+                console.warn('Could not submit feedback to Google Apps Script:', err);
+            }
+        }
+
+        function updateFeedbackUI(productId, rating) {
+            const upBtns = document.querySelectorAll(`button[data-pid="${productId}"][data-rating="up"]`);
+            const downBtns = document.querySelectorAll(`button[data-pid="${productId}"][data-rating="down"]`);
+
+            upBtns.forEach(btn => {
+                const svg = btn.querySelector('svg');
+                if (rating === 'up') {
+                    btn.className = 'feedback-btn feedback-up text-emerald-700 bg-emerald-100 ring-1 ring-emerald-400 transition-all p-1 rounded-full focus:outline-none';
+                    btn.title = 'Helpful pick (recorded)';
+                    if (svg) svg.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.className = 'feedback-btn feedback-up text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all p-1 rounded-full focus:outline-none';
+                    btn.title = 'Mark as helpful recommendation';
+                    if (svg) svg.setAttribute('fill', 'none');
+                }
+            });
+
+            downBtns.forEach(btn => {
+                const svg = btn.querySelector('svg');
+                if (rating === 'down') {
+                    btn.className = 'feedback-btn feedback-down text-rose-700 bg-rose-100 ring-1 ring-rose-400 transition-all p-1 rounded-full focus:outline-none';
+                    btn.title = 'Unhelpful pick (recorded)';
+                    if (svg) svg.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.className = 'feedback-btn feedback-down text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition-all p-1 rounded-full focus:outline-none';
+                    btn.title = 'Mark as not helpful';
+                    if (svg) svg.setAttribute('fill', 'none');
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // 4B. RESPONSE-LEVEL FEEDBACK (Shopping Buddy Chat Messages)
+        // -------------------------------------------------------------
+        function renderResponseFeedbackButtons(turnIndex, hadClarifyingQuestion, numProductsShown) {
+            const tIdx = String(turnIndex);
+            const currentVote = sessionResponseFeedback[tIdx];
+            const isUp = currentVote === 'up';
+            const isDown = currentVote === 'down';
+
+            const upClasses = isUp
+                ? 'text-emerald-700 bg-emerald-100 ring-1 ring-emerald-400 font-semibold'
+                : 'text-stone-400 hover:text-emerald-600 hover:bg-emerald-50';
+            const downClasses = isDown
+                ? 'text-rose-700 bg-rose-100 ring-1 ring-rose-400 font-semibold'
+                : 'text-stone-400 hover:text-rose-600 hover:bg-rose-50';
+            const upFill = isUp ? 'currentColor' : 'none';
+            const downFill = isDown ? 'currentColor' : 'none';
+
+            return `
+                <span class="text-[10px] text-stone-400 font-medium">Was this helpful?</span>
+                <div class="inline-flex items-center gap-0.5 bg-stone-100/90 border border-stone-200/90 rounded-md px-1 py-0.5">
+                    <button type="button"
+                        class="resp-feedback-btn resp-feedback-up ${upClasses} transition-all p-0.5 rounded focus:outline-none"
+                        title="${isUp ? 'Helpful reply (recorded)' : 'Helpful reply'}"
+                        onclick="submitResponseFeedback(event, ${turnIndex}, 'up', ${hadClarifyingQuestion}, ${numProductsShown})"
+                        data-turn="${tIdx}" data-resp-rating="up" aria-label="Thumbs up reply">
+                        <svg class="w-3 h-3 pointer-events-none" fill="${upFill}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+                        </svg>
+                    </button>
+                    <button type="button"
+                        class="resp-feedback-btn resp-feedback-down ${downClasses} transition-all p-0.5 rounded focus:outline-none"
+                        title="${isDown ? 'Unhelpful reply (recorded)' : 'Not helpful'}"
+                        onclick="submitResponseFeedback(event, ${turnIndex}, 'down', ${hadClarifyingQuestion}, ${numProductsShown})"
+                        data-turn="${tIdx}" data-resp-rating="down" aria-label="Thumbs down reply">
+                        <svg class="w-3 h-3 pointer-events-none" fill="${downFill}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3zm7-13h3a2 2 0 012 2v7a2 2 0 01-2 2h-3"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }
+
+        async function submitResponseFeedback(event, turnIndex, rating, hadClarifyingQuestion, numProductsShown) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const tIdx = String(turnIndex);
+            const prevVote = sessionResponseFeedback[tIdx];
+            if (prevVote === rating) {
+                return; // Clicking same button is a no-op
+            }
+
+            sessionResponseFeedback[tIdx] = rating;
+            try {
+                sessionStorage.setItem('aura_response_feedback_votes', JSON.stringify(sessionResponseFeedback));
+            } catch (e) {
+                console.warn('Could not save response feedback to sessionStorage:', e);
+            }
+
+            updateResponseFeedbackUI(tIdx, rating);
+
+            try {
+                await fetch(FEEDBACK_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        feedback_type: 'response',
+                        rating: rating,
+                        turn_index: Number(turnIndex),
+                        had_clarifying_question: Boolean(hadClarifyingQuestion),
+                        num_products_shown: Number(numProductsShown)
+                    })
+                });
+            } catch (err) {
+                console.warn('Could not submit response feedback to Google Apps Script:', err);
+            }
+        }
+
+        function updateResponseFeedbackUI(turnIndex, rating) {
+            const upBtns = document.querySelectorAll(`button[data-turn="${turnIndex}"][data-resp-rating="up"]`);
+            const downBtns = document.querySelectorAll(`button[data-turn="${turnIndex}"][data-resp-rating="down"]`);
+
+            upBtns.forEach(btn => {
+                const svg = btn.querySelector('svg');
+                if (rating === 'up') {
+                    btn.className = 'resp-feedback-btn resp-feedback-up text-emerald-700 bg-emerald-100 ring-1 ring-emerald-400 font-semibold transition-all p-0.5 rounded focus:outline-none';
+                    btn.title = 'Helpful reply (recorded)';
+                    if (svg) svg.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.className = 'resp-feedback-btn resp-feedback-up text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all p-0.5 rounded focus:outline-none';
+                    btn.title = 'Helpful reply';
+                    if (svg) svg.setAttribute('fill', 'none');
+                }
+            });
+
+            downBtns.forEach(btn => {
+                const svg = btn.querySelector('svg');
+                if (rating === 'down') {
+                    btn.className = 'resp-feedback-btn resp-feedback-down text-rose-700 bg-rose-100 ring-1 ring-rose-400 font-semibold transition-all p-0.5 rounded focus:outline-none';
+                    btn.title = 'Unhelpful reply (recorded)';
+                    if (svg) svg.setAttribute('fill', 'currentColor');
+                } else {
+                    btn.className = 'resp-feedback-btn resp-feedback-down text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition-all p-0.5 rounded focus:outline-none';
+                    btn.title = 'Not helpful';
+                    if (svg) svg.setAttribute('fill', 'none');
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // 5. DEMO MODE (Pre-scripted examples with ZERO /chat API calls)
+        // -------------------------------------------------------------
+        function clearDemoBadge() {
+            const demoBadge = document.getElementById('demo-badge-bar');
+            if (demoBadge) {
+                demoBadge.classList.add('hidden');
+            }
+        }
+
+        chatInput.addEventListener('input', () => {
+            if (chatInput.value.trim().length > 0) {
+                clearDemoBadge();
+            }
+        });
+
+        async function runDemo(demoId) {
+            // 1. Open Shopping Buddy panel if not already open
+            toggleBuddy(true);
+
+            // 2. Ensure full catalog is loaded so real products can be shown
+            if (!fullCatalog || fullCatalog.length === 0) {
+                await fetchCatalog();
+            }
+
+            // 3. Display the visible DEMO badge
+            const demoBadge = document.getElementById('demo-badge-bar');
+            if (demoBadge) {
+                demoBadge.classList.remove('hidden');
+            }
+
+            // 4. Reset chat panel with clean dialogue
+            chatMessages.innerHTML = '';
+
+            if (demoId === 1) {
+                // Example 1: Wired headphones for home listening
+                const userMsg = "Looking for wired headphones for home listening and acoustic music, budget around ₹6,000.";
+                const assistantReply = "For dedicated home listening where acoustic separation and audio fidelity matter most, here are three top-ranked wired options from our catalog:\n\n1. **Philips SHP9500** (₹6,499) — Open-back design with large 50mm neodymium drivers delivering an airy, spacious soundstage ideal for home acoustic listening.\n2. **Audio-Technica ATH-M20x** (₹4,099) — Accurate 40mm studio monitor drivers tuned for flat, honest sound reproduction and dependable durability within your budget.\n3. **Sennheiser HD 206** (₹1,490) — Closed-back lightweight build with 36mm drivers; exceptional value pick that delivers clean sound well below your spending ceiling.";
+
+                const matchIds = ['headphones_04', 'headphones_03', 'headphones_02'];
+                const demoProducts = matchIds.map(id => fullCatalog.find(p => p.id === id)).filter(Boolean);
+
+                appendMessage('user', userMsg);
+                appendMessage('assistant', assistantReply, demoProducts, { turnIndex: 0, hadClarifyingQuestion: false, numProductsShown: 3 });
+
+                cachedProducts = demoProducts;
+                try {
+                    sessionStorage.setItem('aura_cached_products', JSON.stringify(cachedProducts));
+                } catch (e) {}
+
+                // Reset route if on detail view and show product grid
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('product')) {
+                    window.history.pushState({}, '', window.location.pathname);
+                }
+                detailSection.classList.add('hidden');
+                renderProductGrid(demoProducts);
+
+            } else if (demoId === 2) {
+                // Example 2: Battery-focused laptop
+                const userMsg = "Need a reliable laptop for travel and daily productivity, budget around ₹1,00,000. Battery life is my top priority.";
+                const assistantReply = "If all-day battery life is your top requirement for travel and productivity, here are three standout endurance picks verified from our catalog:\n\n1. **Apple MacBook Air 13 M4** (₹99,900) — Class-leading efficiency offering up to 18 hours of battery life with the Apple M4 chip and 16GB RAM, making it the premier choice for on-the-go work.\n2. **ASUS Zenbook 14 OLED UX3405MA** (₹99,990) — Powered by the Intel Core Ultra 5 125H with an impressive 15 hours of battery life and a sharp OLED display for extended work sessions.\n3. **HP Laptop 15s-ey4002AU** (₹64,999) — Well under your budget ceiling with 10 hours of battery life on the AMD Ryzen 7 7730U and 16GB RAM for dependable endurance at great value.";
+
+                const matchIds = ['laptop_15', 'laptop_13', 'laptop_07'];
+                const demoProducts = matchIds.map(id => fullCatalog.find(p => p.id === id)).filter(Boolean);
+
+                appendMessage('user', userMsg);
+                appendMessage('assistant', assistantReply, demoProducts, { turnIndex: 0, hadClarifyingQuestion: false, numProductsShown: 3 });
+
+                cachedProducts = demoProducts;
+                try {
+                    sessionStorage.setItem('aura_cached_products', JSON.stringify(cachedProducts));
+                } catch (e) {}
+
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('product')) {
+                    window.history.pushState({}, '', window.location.pathname);
+                }
+                detailSection.classList.add('hidden');
+                renderProductGrid(demoProducts);
+
+            } else if (demoId === 3) {
+                // Example 3: Cheap headphones (Ambiguous-signal clarifying question behavior)
+                const userMsg = "I want some cheap headphones, don't care about anything fancy";
+                const assistantReply = "\"Cheap\" can mean very different things depending on your preferred style and listening habits. Before I pull up catalog recommendations:\n\nAre you looking for **wired headphones** for desktop/plugged-in listening (which start around ₹1,000–₹1,500), or **wireless/true wireless earbuds** for mobile convenience (typically ₹1,500–₹3,000)? Also, do you have a specific maximum budget in rupees?";
+
+                appendMessage('user', userMsg);
+                appendMessage('assistant', assistantReply, [], { turnIndex: 0, hadClarifyingQuestion: true, numProductsShown: 0 });
+
+                // Ambiguous case: NO product grid shown
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('product')) {
+                    window.history.pushState({}, '', window.location.pathname);
+                }
+                detailSection.classList.add('hidden');
+                resultsSection.classList.add('hidden');
+                heroSection.classList.remove('hidden');
+                categoriesSection.classList.remove('hidden');
+            }
+        }
+
+        // Initialize full catalog preload and handle routing
+        fetchCatalog();
+        handleRouting();
+    </script>
+</body>
+</html>

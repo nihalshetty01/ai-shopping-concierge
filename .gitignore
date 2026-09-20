@@ -1,0 +1,7 @@
+﻿.env
+__pycache__/
+*.pyc
+.pytest_cache/
+feedback_log.jsonl
+.vercel
+.trae/
