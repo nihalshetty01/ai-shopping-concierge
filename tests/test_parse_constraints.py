@@ -861,3 +861,33 @@ class TestOutOfCatalogDetection:
         result = parse_constraints("laptop for gaming")
         assert result["category"] == "laptop"
         assert result["detected_out_of_catalog_product"] is None
+
+    def test_real_visitor_mic_message_exact_casing(self):
+        """Permanent regression test — exact live-traffic message that
+        triggered the bug where 'windows pc' was mis-read as the product
+        being bought instead of the host device context.
+
+        'Mic for my windows pc, cheaper' (capital M, original casing)
+        must return category=None, detected_out_of_catalog_product='mic'.
+        Must NOT return category='laptop'.
+        """
+        result = parse_constraints("Mic for my windows pc, cheaper")
+        assert result["category"] is None, (
+            "BUG REGRESSION: 'windows pc' must not override 'Mic' as the "
+            "product subject — OOC detection must run before category detection"
+        )
+        assert result["detected_out_of_catalog_product"] == "mic"
+
+    def test_keyboard_for_windows_laptop_pattern(self):
+        """Generalisation test — same 'X for my [host device]' pattern with
+        a different OOC product and a different host device wording.
+
+        'keyboard for my windows laptop' must return category=None and
+        detected_out_of_catalog_product='keyboard', not category='laptop'.
+        """
+        result = parse_constraints("keyboard for my windows laptop")
+        assert result["category"] is None, (
+            "BUG REGRESSION: 'windows laptop' is the host device, not the "
+            "product being purchased — 'keyboard' must win as OOC"
+        )
+        assert result["detected_out_of_catalog_product"] == "keyboard"
