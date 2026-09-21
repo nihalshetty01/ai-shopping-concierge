@@ -89,6 +89,12 @@ said "cheap," "great sound," or "nothing fancy" without a number or \
 explicit priority), your one clarifying question must target resolving \
 that specific ambiguity directly — never silently assign a number or \
 priority to subjective language.
+2b. If parse_constraints returns a non-None detected_out_of_catalog_product, \
+that category is NOT carried in this catalog. You must clearly and honestly \
+tell the user that product type is not available here. Never silently \
+substitute a different product (e.g. recommending headphones when the user \
+asked for a mic), and never ask a generic clarifying question as if the user \
+had not specified what they wanted.
 3. Once you have enough information, call catalog_search with the \
 structured constraints.
 4. Every response you write is field-matched against the retrieved \
@@ -120,11 +126,14 @@ TOOLS = [
         "description": (
             "Extract structured shopping constraints from a user's "
             "natural-language message.  Returns category, connectivity_type, "
-            "budget, budget_min, budget_max, use_case, priority, and "
-            "ambiguous_signals.  Fields are None when not detected.  "
+            "budget, budget_min, budget_max, use_case, priority, "
+            "ambiguous_signals, and detected_out_of_catalog_product.  "
+            "Fields are None when not detected.  "
             "ambiguous_signals is a list of {type, term} objects for "
             "subjective language (e.g. 'cheap', 'great sound') that needs "
-            "clarification."
+            "clarification.  detected_out_of_catalog_product is a string "
+            "(e.g. 'mic', 'webcam') when the user named a product type not "
+            "carried in this catalog, and None otherwise."
         ),
         "input_schema": {
             "type": "object",

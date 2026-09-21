@@ -17,14 +17,15 @@ direct statement — never inferred from use-case alone.
 Output schema
 -------------
 {
-  "category"          : "laptop" | "phone" | "headphones" | None,
-  "connectivity_type" : "wired" | "wireless" | "true_wireless" | None,
-  "budget"            : float | None,      # = budget_max when range detected
-  "budget_min"        : float | None,      # only set when a range is detected
-  "budget_max"        : float | None,      # only set when a range is detected
-  "use_case"          : str | None,
-  "priority"          : str | None,        # only if EXPLICITLY stated
-  "ambiguous_signals" : list[dict],        # [{"type": "budget"|"priority", "term": str}]
+  "category"                      : "laptop" | "phone" | "headphones" | None,
+  "connectivity_type"             : "wired" | "wireless" | "true_wireless" | None,
+  "budget"                        : float | None,      # = budget_max when range detected
+  "budget_min"                    : float | None,      # only set when a range is detected
+  "budget_max"                    : float | None,      # only set when a range is detected
+  "use_case"                      : str | None,
+  "priority"                      : str | None,        # only if EXPLICITLY stated
+  "ambiguous_signals"             : list[dict],        # [{"type": "budget"|"priority", "term": str}]
+  "detected_out_of_catalog_product": str | None,       # named product not in catalog, or None
 }
 """
 
@@ -61,6 +62,52 @@ _HEADPHONES_SIGNALS = [
     r'\bnoise[- ]cancell?ing\b', r'\banc\b',
     r'\bwireless\s+buds\b',
 ]
+
+
+# ---------------------------------------------------------------------------
+# Out-of-catalog product keywords
+#
+# Common electronics the user might ask for that are NOT in this catalog.
+# Each entry is (keyword_regex, canonical_term).  The canonical term is what
+# gets stored in detected_out_of_catalog_product.
+#
+# Checked ONLY when _detect_category() returns None, so a real category match
+# (e.g. "laptop") always wins and is never mis-flagged as unsupported.
+# ---------------------------------------------------------------------------
+
+_OUT_OF_CATALOG_KEYWORDS: list[tuple[str, str]] = [
+    (r'\bmics?\b',                    'mic'),
+    (r'\bmicrophones?\b',             'microphone'),
+    (r'\bwebcams?\b',                 'webcam'),
+    (r'\bkeyboards?\b',              'keyboard'),
+    (r'\bmouses?\b|\bmice\b',        'mouse'),
+    (r'\bmonitors?\b',               'monitor'),
+    (r'\bspeakers?\b',               'speaker'),
+    (r'\bsmartwatches?\b',           'smartwatch'),
+    (r'\btablets?\b',                'tablet'),
+    (r'\bcameras?\b',                'camera'),
+    (r'\bdesktops?\b|\b(?:gaming\s+)?pc\b|\btower\s+(?:pc|computer)\b', 'desktop'),
+    (r'\bgaming\s+console\b|\bconsoles?\b', 'gaming console'),
+    (r'\btelevisions?\b|\b(?:smart\s+)?tv\b', 'TV'),
+    (r'\brouters?\b',                'router'),
+    (r'\bprinters?\b',               'printer'),
+    (r'\bpower\s+banks?\b',          'power bank'),
+    # Note: 'charger' and 'cable' are intentionally omitted — they appear
+    # frequently as accessory descriptors in legitimate headphone/device queries
+    # (e.g. "earphones with an aux cable") and would produce false positives.
+]
+
+
+def _detect_out_of_catalog(text: str) -> str | None:
+    """Return the canonical name of a known-unsupported product if found, else None.
+
+    Only call this AFTER _detect_category() has returned None — if a real
+    supported category was detected, that match should win unconditionally.
+    """
+    for pattern, canonical in _OUT_OF_CATALOG_KEYWORDS:
+        if re.search(pattern, text, re.IGNORECASE):
+            return canonical
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -549,14 +596,15 @@ def parse_constraints(
     Returns
     -------
     dict with keys:
-        category          – "laptop" | "phone" | "headphones" | None
-        connectivity_type – "wired" | "wireless" | "true_wireless" | None
-        budget            – float | None   (= budget_max when range detected)
-        budget_min        – float | None   (only set when a price range detected)
-        budget_max        – float | None   (only set when a price range detected)
-        use_case          – str | None
-        priority          – str | None     (only if EXPLICITLY stated)
-        ambiguous_signals – list[dict]     (subjective terms that need clarification)
+        category                       – "laptop" | "phone" | "headphones" | None
+        connectivity_type              – "wired" | "wireless" | "true_wireless" | None
+        budget                         – float | None   (= budget_max when range detected)
+        budget_min                     – float | None   (only set when a price range detected)
+        budget_max                     – float | None   (only set when a price range detected)
+        use_case                       – str | None
+        priority                       – str | None     (only if EXPLICITLY stated)
+        ambiguous_signals              – list[dict]     (subjective terms that need clarification)
+        detected_out_of_catalog_product – str | None    (named product not carried in catalog)
     """
     _empty: Constraints = {
         "category": None,
@@ -567,6 +615,7 @@ def parse_constraints(
         "use_case": None,
         "priority": None,
         "ambiguous_signals": [],
+        "detected_out_of_catalog_product": None,
     }
 
     if not user_message or not user_message.strip():
@@ -581,7 +630,15 @@ def parse_constraints(
 
     msg = user_message.strip()
 
-    category = _detect_category(msg)
+    # Out-of-catalog detection runs BEFORE category detection.
+    # If the user has named a product we don't carry (e.g. "mic", "webcam"),
+    # the subject of the purchase is clearly that unsupported item and any
+    # incidental device mention ("windows pc", "my laptop") is just context
+    # for what they'll plug it into — we must not mistake it for the thing
+    # being bought.  So when an OOC product is detected, category stays None.
+    out_of_catalog: str | None = _detect_out_of_catalog(msg)
+
+    category = None if out_of_catalog else _detect_category(msg)
 
     # Connectivity is only meaningful for headphones, but the category may
     # have been established on an EARLIER turn — a reply of "true wireless"
@@ -615,14 +672,15 @@ def parse_constraints(
     ambiguous_signals = _detect_ambiguous_signals(msg, budget, priority)
 
     result: Constraints = {
-        "category":          category,
-        "connectivity_type": connectivity_type,
-        "budget":            budget,
-        "budget_min":        budget_min,
-        "budget_max":        budget_max,
-        "use_case":          use_case,
-        "priority":          priority,
-        "ambiguous_signals": ambiguous_signals,
+        "category":                       category,
+        "connectivity_type":              connectivity_type,
+        "budget":                         budget,
+        "budget_min":                     budget_min,
+        "budget_max":                     budget_max,
+        "use_case":                       use_case,
+        "priority":                       priority,
+        "ambiguous_signals":              ambiguous_signals,
+        "detected_out_of_catalog_product": out_of_catalog,
     }
 
     # Merge prior_context — current message always wins

@@ -34,7 +34,8 @@ from tools.parse_constraints import parse_constraints
 
 def _r(category=None, connectivity_type=None, budget=None,
         use_case=None, priority=None,
-        budget_min=None, budget_max=None, ambiguous_signals=None):
+        budget_min=None, budget_max=None, ambiguous_signals=None,
+        detected_out_of_catalog_product=None):
     """Shorthand for building an expected result dict.
 
     New fields default to None / [] so that existing tests that call
@@ -49,6 +50,7 @@ def _r(category=None, connectivity_type=None, budget=None,
         "use_case":          use_case,
         "priority":          priority,
         "ambiguous_signals": ambiguous_signals if ambiguous_signals is not None else [],
+        "detected_out_of_catalog_product": detected_out_of_catalog_product,
     }
 
 
@@ -807,3 +809,55 @@ class TestConnectivityFromPriorContext:
         ctx = {"category": "headphones", "connectivity_type": "wireless"}
         result = parse_constraints("actually wired headphones", prior_context=ctx)
         assert result["connectivity_type"] == "wired"
+
+
+# ---------------------------------------------------------------------------
+# Out-of-catalog detection
+# ---------------------------------------------------------------------------
+
+class TestOutOfCatalogDetection:
+    """detected_out_of_catalog_product is set when the user names a product
+    type not carried in the catalog, and only when no supported category was
+    found (so real categories always win).
+    """
+
+    def test_real_visitor_mic_message(self):
+        """Exact message sent by a live visitor.
+
+        'mic for my windows pc, cheaper' must surface detected_out_of_catalog_product='mic'
+        because 'mic' matches no supported category.
+        The word 'cheaper' is an ambiguous budget signal (no number), so that
+        field is also exercised here.
+        """
+        result = parse_constraints("mic for my windows pc, cheaper")
+        assert result["category"] is None, (
+            "'windows pc' context must NOT promote this to 'laptop'; "
+            "the product being asked about is a mic"
+        )
+        assert result["detected_out_of_catalog_product"] == "mic"
+
+    def test_webcam_detected(self):
+        """'webcam under 2000' must detect 'webcam' as an unsupported product."""
+        result = parse_constraints("webcam under 2000")
+        assert result["category"] is None
+        assert result["detected_out_of_catalog_product"] == "webcam"
+        # Budget extraction should still work alongside the OOC signal
+        assert result["budget"] == 2000.0
+
+    def test_genuinely_ambiguous_message_returns_none(self):
+        """'I need something for my computer stuff' is genuinely ambiguous —
+        no named unsupported product, so the field must stay None.
+        This guards the existing G14-style case from regressing.
+        """
+        result = parse_constraints("I need something for my computer stuff")
+        assert result["category"] is None
+        assert result["detected_out_of_catalog_product"] is None
+
+    def test_real_category_wins_over_ooc_check(self):
+        """'laptop for gaming' must produce category='laptop' and
+        detected_out_of_catalog_product=None — a real category match must
+        never be shadowed by this new check.
+        """
+        result = parse_constraints("laptop for gaming")
+        assert result["category"] == "laptop"
+        assert result["detected_out_of_catalog_product"] is None
