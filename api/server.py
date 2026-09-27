@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -402,6 +403,13 @@ def get_product_by_id(product_id: str) -> Dict[str, Any]:
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Product with ID '{product_id}' not found in catalog.",
     )
+
+
+@app.get("/", include_in_schema=False)
+def get_index() -> FileResponse:
+    """Serve the frontend single-page application."""
+    index_path = _PROJECT_ROOT / "frontend" / "index.html"
+    return FileResponse(index_path)
 
 
 
