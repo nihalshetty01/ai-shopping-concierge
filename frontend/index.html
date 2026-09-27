@@ -275,7 +275,7 @@
         <section id="detail-section" class="hidden flex flex-col gap-6">
             <!-- Detail view controls -->
             <div class="flex items-center justify-between">
-                <button id="back-button" onclick="navigateHome()" class="inline-flex items-center gap-2 text-xs font-bold text-stone-700 hover:text-stone-950 bg-white border border-stone-200 hover:border-stone-300 px-4 py-2.5 rounded-lg shadow-sm hover:shadow transition group">
+                <button id="back-button" onclick="navigateBackFromDetail()" class="inline-flex items-center gap-2 text-xs font-bold text-stone-700 hover:text-stone-950 bg-white border border-stone-200 hover:border-stone-300 px-4 py-2.5 rounded-lg shadow-sm hover:shadow transition group">
                     <svg class="w-4 h-4 text-stone-500 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -488,7 +488,7 @@
                 </div>
             </div>
             <!-- Close icon button -->
-            <button onclick="toggleBuddy(false)" class="text-gray-400 hover:text-white text-xl p-1 font-bold focus:outline-none">&times;</button>
+            <button onclick="closeBuddyViaHistory()" class="text-gray-400 hover:text-white text-xl p-1 font-bold focus:outline-none">&times;</button>
         </div>
 
         <!-- Demo Mode Notice Banner -->
@@ -724,17 +724,41 @@
             });
         }
 
-        // Toggle Sidebar visibility
-        function toggleBuddy(open) {
+        function isBuddyOpen() {
+            return chatSidebar && !chatSidebar.classList.contains('translate-x-full');
+        }
+
+        // Toggle Sidebar visibility and sync with history
+        function toggleBuddy(open, pushHistory = true) {
             if (open) {
                 if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
                     toggleMobileMenu(false);
                 }
+                const wasClosed = !isBuddyOpen();
                 chatSidebar.classList.remove('translate-x-full');
                 sidebarBackdrop.classList.remove('hidden');
+
+                if (pushHistory && wasClosed) {
+                    const currentParams = new URLSearchParams(window.location.search);
+                    const currentPid = currentParams.get('product');
+                    const newState = { view: 'shopping-buddy' };
+                    if (currentPid) {
+                        newState.productId = currentPid;
+                    }
+                    window.history.pushState(newState, '', window.location.href);
+                }
             } else {
                 chatSidebar.classList.add('translate-x-full');
                 sidebarBackdrop.classList.add('hidden');
+            }
+        }
+
+        // Manual close of Shopping Buddy pops history if panel was opened via history
+        function closeBuddyViaHistory() {
+            if (window.history.state && window.history.state.view === 'shopping-buddy') {
+                window.history.back();
+            } else {
+                toggleBuddy(false, false);
             }
         }
 
@@ -745,7 +769,7 @@
                 toggleBuddy(true);
             });
         }
-        sidebarBackdrop.addEventListener('click', () => toggleBuddy(false));
+        sidebarBackdrop.addEventListener('click', closeBuddyViaHistory);
 
         // Close mobile menu on resize to desktop breakpoint (768px+)
         window.addEventListener('resize', () => {
@@ -1067,14 +1091,14 @@
             if (!productId) return;
             
             // Close/collapse the Shopping Buddy panel BEFORE navigating to the detail view
-            toggleBuddy(false);
+            toggleBuddy(false, false);
             if (typeof toggleMobileMenu === 'function') {
                 toggleMobileMenu(false);
             }
 
             const url = new URL(window.location);
             url.searchParams.set('product', productId);
-            window.history.pushState({ productId }, '', url);
+            window.history.pushState({ productId, view: 'product-detail', fromApp: true }, '', url);
             handleRouting();
 
             // Scroll the page to the top of the detail view on navigation
@@ -1086,15 +1110,37 @@
             }
         }
 
+        function navigateBackFromDetail() {
+            if (window.history.state && window.history.state.fromApp) {
+                window.history.back();
+            } else {
+                navigateHome();
+            }
+        }
+
         function navigateHome() {
+            if (isBuddyOpen() && window.history.state && window.history.state.view === 'shopping-buddy') {
+                window.history.back();
+                return;
+            }
+            toggleBuddy(false, false);
             const url = new URL(window.location);
             url.searchParams.delete('product');
             window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
             handleRouting();
         }
 
-        // Router handler: determines view based on ?product=<id> query parameter
-        async function handleRouting() {
+        // Router handler: determines view based on ?product=<id> query parameter and history state
+        async function handleRouting(event) {
+            const state = (event && event.state) ? event.state : window.history.state;
+
+            // Synchronize Shopping Buddy panel state with browser history
+            if (state && state.view === 'shopping-buddy') {
+                toggleBuddy(true, false);
+            } else {
+                toggleBuddy(false, false);
+            }
+
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('product');
 
@@ -1268,7 +1314,7 @@
                         This item isn't loaded — search again via Shopping Buddy to view it
                     </p>
                     <div class="flex flex-wrap items-center justify-center gap-3">
-                        <button onclick="navigateHome()" class="inline-flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-sm">
+                        <button onclick="navigateBackFromDetail()" class="inline-flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
